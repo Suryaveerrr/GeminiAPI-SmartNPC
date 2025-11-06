@@ -10,6 +10,12 @@ public class AI_NPC : MonoBehaviour, IInteractable
     [TextArea(10, 20)]
     public string persona;
 
+    // --- NEW ---
+    [Header("Voice")]
+    [Tooltip("The prebuilt voice name (e.g., 'Kore', 'Puck', 'Leda')")]
+    public string voiceName = "Kore";
+    // --- END NEW ---
+
     [Header("Interaction")]
     [SerializeField] private string interactText = "Talk [E]";
 

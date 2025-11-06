@@ -16906,7 +16906,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: The Eleanor House
+  m_text: shape of a question
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b325e5872ada05d4b856df595bb1c807, type: 2}
   m_sharedMaterial: {fileID: -688306470641615423, guid: b325e5872ada05d4b856df595bb1c807, type: 2}
