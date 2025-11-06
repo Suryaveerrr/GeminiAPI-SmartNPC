@@ -1,77 +1,91 @@
-# GeminiAPI-SmartNPC
-A first-person narrative horror game where you solve a domestic mystery by having real-time conversations with AI-powered characters, built in Unity with the Google Gemini API.
-A 3D narrative horror game where you solve a mystery by having real-time, multi-modal conversations with generative AI-powered NPCs.
+A Real-Time AI-Driven Narrative Horror Experience
 
-About The Project
+This is a first-person mystery horror game where every conversation matters. Instead of picking pre-written dialogue options, you must think like a detective, asking the right questions to uncover a dark family secret.
 
-This project was built to solve the "illusion of choice" problem found in traditional narrative games. Instead of presenting the player with a pre-written dialogue tree (A, B, C), this game provides a free-form text input field. The player must actively think, listen, and ask the right questions to uncover a dark family secret.
+Powered by Google Gemini, NPCs generate real-time, context-aware dialogue (text + speech + animation), ensuring no two players will ever have the same experience.
 
-The challenge is no longer "click all the options," but "think like a detective."
+🎯 Project Goal
 
-Core Features
+Traditional narrative games limit storytelling by offering predictable A/B/C dialogue trees.
+This game eliminates the illusion of choice — you speak freely, the characters respond naturally.
 
-Real-time Generative Dialogue: Replaces static dialogue trees. The player can ask anything, leading to emergent, unscripted conversations.
+✅ Every conversation is emergent
+✅ Every secret must be uncovered through deduction
+✅ Every response is AI-generated live
 
-Dynamic Persona System: Each NPC's personality, secrets, knowledge, and voice are controlled by a detailed "persona prompt" written in the Unity Inspector.
+🧩 Core Features
+Feature	Description
+Real-Time Generative Dialogue	No static dialogue trees — players type freely to interact with NPCs.
+Dynamic Persona System	NPCs have hidden motives, knowledge, and personality configured inside Unity.
+Multi-Modal Output Sync	Text + TTS Audio + Animation play together perfectly every time.
+Chained API Call Architecture	Ensures the speech always matches the generated text.
+Game State Manager	Clean transitions between free movement and dialogue interaction.
+🔧 Technical Architecture
 
-Multi-Modal Synchronized Output: The system's key innovation. It generates and delivers Text, Text-to-Speech Audio, and 3D Animation all at the exact same time for a polished, immersive experience.
+The core innovation is a 4-Step Synchronized Multi-Modal Flow:
 
-Chained API Call Architecture: A robust system that first generates the text response, then immediately generates the speech for that text, ensuring the audio always matches.
+Player Input → Text Generation → Speech Generation → Unified Delivery
 
-Robust State Management: A central GameManager (Singleton) prevents all input conflicts, cleanly separating "Gameplay" and "InDialogue" states.
+Detailed Breakdown:
 
-Technical Architecture: The Multi-Modal Flow
+Player Input
 
-The system's greatest challenge was solving the audio/text sync issue. This was achieved with a "chained" 4-step architecture:
+DialogueUI_Manager sends persona, voiceName, and question to AIManager
 
-INPUT: The DialogueUI_Manager captures the player's text and sends the persona, voiceName, and question to the AIManager. A "..." loading message is shown.
+Displays a loading “…” indicator
 
-TEXT API CALL: The AIManager starts a coroutine and tells the GeminiAPI_Client to call the gemini-2.5-flash-preview model.
+Text Generation
 
-SPEECH API CALL: When the text response is received, it is hidden from the player. The AIManager immediately makes a second API call, sending the new text to the gemini-2.5-flash-preview-tts model.
+AIManager calls the Gemini Text API (gemini-2.5-flash-preview)
 
-SYNCHRONIZED RESPONSE: When the AudioClip is generated and returned, the AIManager fires a single OnDialogueReady event. The DialogueUI_Manager receives this event and does three things on the same frame:
+Response text is stored but not yet shown
 
-Shows the generated text.
+Speech Generation
 
-Plays the generated AudioClip.
+AIManager immediately sends the text to Gemini TTS API
+(gemini-2.5-flash-preview-tts)
 
-Triggers the startTalking animation.
+AudioClip returned + Base64 decoding handled internally
 
-Technologies Used
+Synchronized Response Event
 
-Game Engine: Unity 2022.3 (LTS)
+AIManager triggers OnDialogueReady
 
-Language: C#
+DialogueUI_Manager:
+✅ Reveals the text
+✅ Plays the audio
+✅ Triggers startTalking animation
 
-Text Generation: Google Gemini API (gemini-2.5-flash-preview)
+🧠 All outputs appear on the very same frame — perfect immersion.
 
-Speech Generation: Google Gemini TTS API (gemini-2.5-flash-preview-tts)
+🏗️ Technologies Used
+Category	Tool
+Game Engine	Unity 2022.3 LTS
+Programming Language	C#
+Text AI Model	Google Gemini 2.5 Flash Preview
+Speech Model	Google Gemini 2.5 Flash TTS
+Networking	UnityWebRequest (Async Calls)
+UI	TextMeshPro
+Animation	Adobe Mixamo
+🛠️ Core Script Overview
+Script	Role
+AIManager.cs	Orchestrates conversation flow + state handling
+GeminiAPI_Client.cs	Handles API requests + JSON + Base64 audio conversion
+DialogueUI_Manager.cs	Displays dialogue, plays audio, triggers animations
+AI_NPC.cs	Defines each character’s persona + TTS voice settings
+GameManager.cs	Controls gameplay states (exploration vs dialogue)
+🚀 Getting Started
+Requirements
 
-Animation: Adobe Mixamo
+✅ Unity 2022.3 LTS
+✅ Google AI API Key
 
-Web Requests: UnityWebRequest (for asynchronous API calls)
+Setup
 
-UI: TextMeshPro
+Install Unity 2022.3 (LTS)
 
-Getting Started
+Add your API key to the GoogleAIConfig.asset in Unity
 
-To get this project running, you will need a valid Google AI API key.
+Plug your NPC’s persona prompts into AI_NPC.cs component
 
-Core Script Breakdown
-
-AIManager.cs: The "brain" of the system. Manages the state of the conversation and orchestrates the chained API calls.
-
-GeminiAPI_Client.cs: The "delivery driver." Manages all low-level UnityWebRequest calls for both text and TTS, handles JSON, and converts Base64 audio to AudioClip.
-
-DialogueUI_Manager.cs: The "waiter." Manages all UI elements, listens for the final OnDialogueReady event, and fires all three synchronized outputs.
-
-AI_NPC.cs: A simple data component attached to characters, holding their persona and voiceName.
-
-GameManager.cs: The master state controller. Pauses player movement and input when the dialogue UI is active.
-
-Acknowledgments
-
-All 3D character models sourced from the Unity Asset Store.
-
-All character animations sourced from Adobe Mixamo.
+Hit Play and start talking with the unknown…
