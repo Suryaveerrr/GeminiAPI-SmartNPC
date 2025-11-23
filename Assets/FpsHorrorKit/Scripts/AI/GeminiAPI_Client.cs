@@ -15,8 +15,8 @@ public class GeminiAPI_Client : MonoBehaviour
     public static GeminiAPI_Client Instance { get; private set; }
 
     // --- API Configuration ---
-    private const string GeminiTextApiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=";
-    private const string GeminiSpeechApiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=";
+    private const string GeminiTextApiUrl = "PASTE_YOUR_API_KEY";
+    private const string GeminiSpeechApiUrl = "PASTE_YOUR_API_KEY";
     private string apiKey = null; // This will be loaded at runtime
 
     #region Text API Data Structures
