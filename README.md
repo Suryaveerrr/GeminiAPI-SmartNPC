@@ -1,91 +1,108 @@
-A Real-Time AI-Driven Narrative Horror Experience
+# 👁️ Real-Time AI Narrative Horror
 
-This is a first-person mystery horror game where every conversation matters. Instead of picking pre-written dialogue options, you must think like a detective, asking the right questions to uncover a dark family secret.
+![Unity](https://img.shields.io/badge/Unity-2022.3%20LTS-black?style=flat&logo=unity)
+![AI](https://img.shields.io/badge/Model-Gemini%202.5%20Flash-4285F4?style=flat&logo=google)
+![Status](https://img.shields.io/badge/Status-Prototype-orange)
 
-Powered by Google Gemini, NPCs generate real-time, context-aware dialogue (text + speech + animation), ensuring no two players will ever have the same experience.
+> **A first-person mystery where every conversation matters. No dialogue trees. No scripts. Just you and the AI.**
 
-🎯 Project Goal
+This is a narrative horror experiment where **you don't pick pre-written dialogue options**. Instead, you must think like a detective, typing your own questions to uncover a dark family secret.
 
-Traditional narrative games limit storytelling by offering predictable A/B/C dialogue trees.
-This game eliminates the illusion of choice — you speak freely, the characters respond naturally.
+Powered by **Google Gemini**, NPCs generate real-time, context-aware dialogue (Text + Speech + Animation), ensuring that no two players will ever have the same experience.
 
-✅ Every conversation is emergent
-✅ Every secret must be uncovered through deduction
-✅ Every response is AI-generated live
+<img width="1580" height="885" alt="image" src="https://github.com/user-attachments/assets/1462606d-370f-4d1b-a221-e9663b5e6fe3" />
+<img width="1574" height="883" alt="image" src="https://github.com/user-attachments/assets/4e8d0ba1-30c7-4ccb-b6b8-91065915e83e" />
+<img width="1576" height="883" alt="image" src="https://github.com/user-attachments/assets/5f429e09-f2ed-40b0-95d1-8116e9410064" />
+<img width="1576" height="882" alt="image" src="https://github.com/user-attachments/assets/bae7a30b-559c-4ba6-afc5-64877ee7505a" />
+<img width="1580" height="877" alt="image" src="https://github.com/user-attachments/assets/085ba6e1-3ccd-443f-bb4b-d06fb5a0e8ef" />
+<img width="1581" height="887" alt="image" src="https://github.com/user-attachments/assets/8726d8b4-5d80-4605-9d71-52832d0bb159" />
+<img width="1580" height="883" alt="image" src="https://github.com/user-attachments/assets/c1ea3356-b81a-469f-a178-4d9206953ccc" />
 
-🧩 Core Features
-Feature	Description
-Real-Time Generative Dialogue	No static dialogue trees — players type freely to interact with NPCs.
-Dynamic Persona System	NPCs have hidden motives, knowledge, and personality configured inside Unity.
-Multi-Modal Output Sync	Text + TTS Audio + Animation play together perfectly every time.
-Chained API Call Architecture	Ensures the speech always matches the generated text.
-Game State Manager	Clean transitions between free movement and dialogue interaction.
-🔧 Technical Architecture
 
-The core innovation is a 4-Step Synchronized Multi-Modal Flow:
+---
 
-Player Input → Text Generation → Speech Generation → Unified Delivery
+## 🎯 Project Goal
 
-Detailed Breakdown:
+Traditional narrative games limit storytelling by offering predictable A/B/C dialogue trees. This project eliminates the illusion of choice.
 
-Player Input
+* ✅ **True Freedom:** You speak freely; the characters respond naturally.
+* ✅ **Emergent Story:** Every secret must be uncovered through actual deduction.
+* ✅ **Live Generation:** Every response is AI-generated in real-time.
 
-DialogueUI_Manager sends persona, voiceName, and question to AIManager
+---
 
-Displays a loading “…” indicator
+## 🔧 Technical Architecture
 
-Text Generation
+The core innovation is a **4-Step Synchronized Multi-Modal Flow**. The system ensures that text, audio, and animation remain perfectly synced to maintain immersion.
 
-AIManager calls the Gemini Text API (gemini-2.5-flash-preview)
+### The "Synchronized Delivery" Flow
 
-Response text is stored but not yet shown
+1.  **Player Input** 📝
+    * `DialogueUI_Manager` captures user text.
+    * Sends the Persona, Voice Name, and Question to the `AIManager`.
+    * UI displays a "..." thinking indicator.
 
-Speech Generation
+2.  **Text Generation** 🧠
+    * `AIManager` calls the **Gemini 2.5 Flash API**.
+    * The response text is generated and stored internally (hidden from player).
 
-AIManager immediately sends the text to Gemini TTS API
-(gemini-2.5-flash-preview-tts)
+3.  **Speech Generation** 🗣️
+    * The text is immediately piped into the **Gemini 2.5 Flash TTS API**.
+    * Returns an AudioClip (Base64 decoding handled internally).
 
-AudioClip returned + Base64 decoding handled internally
+4.  **Unified Delivery** 🎬
+    * `AIManager` triggers the `OnDialogueReady` event.
+    * **IN THE SAME FRAME:** The text reveals, the audio plays, and the NPC's talking animation triggers.
 
-Synchronized Response Event
+---
 
-AIManager triggers OnDialogueReady
+## 🧩 Core Features
 
-DialogueUI_Manager:
-✅ Reveals the text
-✅ Plays the audio
-✅ Triggers startTalking animation
+* **Real-Time Generative Dialogue:** No static trees. The conversation evolves based on your exact words.
+* **Dynamic Persona System:** NPCs have hidden motives, specific knowledge bases, and personality traits configured directly inside the Unity Inspector.
+* **Multi-Modal Output Sync:** Eliminates the "lag" between reading text and hearing voice.
+* **Game State Manager:** Handles clean transitions between free-roaming exploration and focused dialogue states.
 
-🧠 All outputs appear on the very same frame — perfect immersion.
+---
 
-🏗️ Technologies Used
-Category	Tool
-Game Engine	Unity 2022.3 LTS
-Programming Language	C#
-Text AI Model	Google Gemini 2.5 Flash Preview
-Speech Model	Google Gemini 2.5 Flash TTS
-Networking	UnityWebRequest (Async Calls)
-UI	TextMeshPro
-Animation	Adobe Mixamo
-🛠️ Core Script Overview
-Script	Role
-AIManager.cs	Orchestrates conversation flow + state handling
-GeminiAPI_Client.cs	Handles API requests + JSON + Base64 audio conversion
-DialogueUI_Manager.cs	Displays dialogue, plays audio, triggers animations
-AI_NPC.cs	Defines each character’s persona + TTS voice settings
-GameManager.cs	Controls gameplay states (exploration vs dialogue)
-🚀 Getting Started
-Requirements
+## 🛠️ Tech Stack
 
-✅ Unity 2022.3 LTS
-✅ Google AI API Key
+| Category | Tool/Library |
+| :--- | :--- |
+| **Game Engine** | Unity 2022.3 LTS |
+| **Language** | C# |
+| **Text Model** | **Google Gemini 2.5 Flash Preview** |
+| **Speech Model** | **Google Gemini 2.5 Flash TTS** |
+| **Networking** | UnityWebRequest (Async/Await) |
+| **Animation** | Adobe Mixamo |
+| **UI** | TextMeshPro |
 
-Setup
+---
 
-Install Unity 2022.3 (LTS)
+## 📂 Script Overview
 
-Add your API key to the GoogleAIConfig.asset in Unity
+| Script | Responsibility |
+| :--- | :--- |
+| `AIManager.cs` | The brain. Orchestrates the flow between text generation, TTS, and state handling. |
+| `GeminiAPI_Client.cs` | Handles the raw API requests, JSON parsing, and Base64 audio conversion. |
+| `DialogueUI_Manager.cs` | Manages the frontend: displays text, plays audio sources, and triggers Animator parameters. |
+| `AI_NPC.cs` | Configurable component defining the character's specific persona prompts and voice settings. |
+| `GameManager.cs` | Controls macro gameplay states (Switching between First-Person Controller and Dialogue Mode). |
 
-Plug your NPC’s persona prompts into AI_NPC.cs component
+---
 
-Hit Play and start talking with the unknown…
+## 🚀 Getting Started
+
+### Requirements
+* Unity 2022.3 LTS or higher
+* A valid **Google AI Studio API Key**
+
+### Installation
+1.  Clone the repository.
+2.  Open the project in Unity.
+3.  Navigate to `Assets/Resources/GoogleAIConfig.asset` (or where you stored your config).
+4.  Paste your **API Key**.
+5.  Select an NPC in the scene and edit their **Persona Prompt** in the `AI_NPC` component.
+6.  Hit **Play** and start the interrogation.
+
+---
