@@ -13,8 +13,7 @@ public class GeminiAPI_Client : MonoBehaviour
    
     private const string GeminiTextApiUrl = "PASTE_YOUR_API_KEY";
     private const string GeminiSpeechApiUrl = "PASTE_YOUR_API_KEY";
-    private string apiKey = null; // This will be loaded at runtime
-
+    private string apiKey = null; 
     #region Text API Data Structures
     [Serializable]
     private class TextRequest
