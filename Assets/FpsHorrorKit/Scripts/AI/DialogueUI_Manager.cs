@@ -33,7 +33,7 @@ public class DialogueUI_Manager : MonoBehaviour
         if (closeButton) closeButton.onClick.AddListener(CloseConversation);
 
         
-        // Safety check for the AudioSource
+      
         if (npcAudioSource == null)
         {
             Debug.LogError("DialogueUI_Manager: NPC Audio Source is not assigned in the Inspector! Please add one.");
@@ -62,10 +62,10 @@ public class DialogueUI_Manager : MonoBehaviour
 
     private void Update()
     {
-        // Guard clause for game state
+        
         if (GameManager.Instance.CurrentGameState != GameState.InDialogue) return;
 
-        // Allow closing with Escape key
+        
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             CloseConversation();
@@ -77,11 +77,11 @@ public class DialogueUI_Manager : MonoBehaviour
         GameManager.Instance.SetGameState(GameState.InDialogue);
         currentNpc = npc;
 
-        // Get the Animator from the NPC
+        
         currentNpcAnimator = currentNpc.GetComponent<Animator>();
 
         
-        // Get the voice name from the NPC
+        
         currentVoiceName = npc.voiceName;
         
 
@@ -98,7 +98,7 @@ public class DialogueUI_Manager : MonoBehaviour
 
     public void CloseConversation()
     {
-        // Stop any currently playing audio when closing
+        
         if (npcAudioSource != null)
         {
             npcAudioSource.Stop();
@@ -106,8 +106,8 @@ public class DialogueUI_Manager : MonoBehaviour
 
         dialogueCanvas.SetActive(false);
         currentNpc = null;
-        currentNpcAnimator = null; // Clear the reference
-        currentVoiceName = null; // Clear the voice name
+        currentNpcAnimator = null; 
+        currentVoiceName = null; 
         GameManager.Instance.SetGameState(GameState.Gameplay);
 
         InteractCameraSettings.Instance.HideCursor();
@@ -117,51 +117,46 @@ public class DialogueUI_Manager : MonoBehaviour
     {
         if (playerInputField.text != "" && currentNpc != null)
         {
-            // Stop any playing audio when sending a new question
+            
             if (npcAudioSource != null)
             {
                 npcAudioSource.Stop();
             }
 
             
-            // We now pass the voiceName when we ask the question
+            
             AIManager.Instance.AskQuestion(currentNpc.persona, playerInputField.text, currentVoiceName);
             
 
-            npcResponseText.text = "..."; // Show thinking indicator
+            npcResponseText.text = "..."; 
 
             playerInputField.text = "";
             playerInputField.ActivateInputField();
         }
     }
 
-    /// <summary>
-    /// This function is called by the AIManager when a new text response is ready.
-    /// </summary>
+    
     
 
     
-    /// <summary>
-    /// This function is called by AIManager when BOTH text and audio are ready.
-    /// </summary>
+   
     private void DisplayDialogue(string response, AudioClip clip)
     {
-        // 1. Trigger the talking animation
+        
         if (currentNpcAnimator != null)
         {
             currentNpcAnimator.SetTrigger("startTalking");
         }
 
-        // 2. Remove quotes from the response
+        
         if (response.StartsWith("\"") && response.EndsWith("\"") && response.Length > 2)
         {
             response = response.Substring(1, response.Length - 2);
         }
 
-        // 3. Set the text
         npcResponseText.text = response;
 
-        // 4. Play the audio
+        
         if (clip != null && npcAudioSource != null && GameManager.Instance.CurrentGameState == GameState.InDialogue)
         {
             npcAudioSource.PlayOneShot(clip);
