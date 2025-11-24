@@ -1,11 +1,7 @@
 using System;
 using UnityEngine;
 
-/// <summary>
-/// This is the central brain of the AI system. It is a Singleton.
-/// It takes requests from the UI (DialogueUI_Manager) and uses the API Client (GeminiAPI_Client)
-/// to get responses from the Google Gemini API.
-/// </summary>
+
 public class AIManager : MonoBehaviour
 {
     public static AIManager Instance { get; private set; }
@@ -14,7 +10,7 @@ public class AIManager : MonoBehaviour
     // This new event will send BOTH the text and the audio clip at the same time.
     public static event Action<string, AudioClip> OnDialogueReady;
 
-    // We remove the old event
+    
     // public static event Action<string> OnDialogueReceived;
     
 
@@ -37,16 +33,14 @@ public class AIManager : MonoBehaviour
    
     public void AskQuestion(string persona, string question, string voiceName)
     {
-        // 1. Store the voice name for the next step
+        
         this.storedVoiceName = voiceName;
-        // --- END MODIFIED ---
-
-        // 2. Construct the final prompt.
+       
+        
         string prompt = $"{persona}\n\nPlayer: \"{question}\"\n\nCharacter:";
         Debug.Log("Sending text prompt to Gemini: " + prompt);
 
-        // 3. Call the API client's coroutine to send the request.
-        // We pass HandleTextResponse as the "callback" function.
+        
         StartCoroutine(GeminiAPI_Client.Instance.GenerateContent(prompt, HandleTextResponse));
     }
 
@@ -58,11 +52,10 @@ public class AIManager : MonoBehaviour
             Debug.Log("Gemini Response: " + response);
 
             
-            // 1. Store the text response
+            
             this.storedTextResponse = response;
 
-            // 2. Immediately call the Speech API.
-            // We pass HandleSpeechResponse as the *next* callback.
+            
             StartCoroutine(GeminiAPI_Client.Instance.GenerateSpeech(response, this.storedVoiceName, HandleSpeechResponse));
             
         }
