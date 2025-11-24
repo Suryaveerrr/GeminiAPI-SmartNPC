@@ -4,17 +4,13 @@ using System.Collections;
 using System.Text;
 using System;
 
-/// <summary>
-/// This script is the low-level client responsible for all communication
-/// with the Google Gemini APIs (both text and speech).
-/// It uses the Singleton pattern to be easily accessible.
-/// </summary>
+
 public class GeminiAPI_Client : MonoBehaviour
 {
-    // --- SINGLETON ---
+   
     public static GeminiAPI_Client Instance { get; private set; }
 
-    // --- API Configuration ---
+   
     private const string GeminiTextApiUrl = "PASTE_YOUR_API_KEY";
     private const string GeminiSpeechApiUrl = "PASTE_YOUR_API_KEY";
     private string apiKey = null; // This will be loaded at runtime
@@ -124,8 +120,8 @@ public class GeminiAPI_Client : MonoBehaviour
     [Serializable]
     private class TTSInlineData
     {
-        public string mimeType; // e.g., "audio/L16;rate=24000"
-        public string data;     // Base64 encoded audio data
+        public string mimeType; 
+        public string data;     
     }
     #endregion
 
@@ -139,15 +135,12 @@ public class GeminiAPI_Client : MonoBehaviour
             return;
         }
         Instance = this;
-        DontDestroyOnLoad(gameObject); // Ensure it persists across scenes if needed
+        DontDestroyOnLoad(gameObject); 
 
         apiKey = GetApiKey();
     }
 
-    /// <summary>
-    /// Safely gets the API key.
-    /// (In a real project, this would be loaded from a secure file)
-    /// </summary>
+    
     private string GetApiKey()
     {
         
@@ -160,9 +153,7 @@ public class GeminiAPI_Client : MonoBehaviour
         return key;
     }
 
-    /// <summary>
-    /// Coroutine to generate text content from a prompt.
-    /// </summary>
+    
     public IEnumerator GenerateContent(string prompt, Action<string> onResponse)
     {
         if (string.IsNullOrEmpty(apiKey))
@@ -173,7 +164,7 @@ public class GeminiAPI_Client : MonoBehaviour
         }
         string fullApiUrl = GeminiTextApiUrl + apiKey;
 
-        // 1. Create the JSON payload
+        
         var requestBody = new TextRequest
         {
             contents = new[] { new Content { parts = new[] { new Part { text = prompt } } } }
@@ -181,7 +172,7 @@ public class GeminiAPI_Client : MonoBehaviour
         string jsonBody = JsonUtility.ToJson(requestBody);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
 
-        // 2. Send the POST request
+       
         using (UnityWebRequest uwr = new UnityWebRequest(fullApiUrl, "POST"))
         {
             uwr.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -190,7 +181,7 @@ public class GeminiAPI_Client : MonoBehaviour
 
             yield return uwr.SendWebRequest();
 
-            // 3. Handle the response
+           
             if (uwr.result != UnityWebRequest.Result.Success)
             {
                 Debug.LogError("GeminiAPI Text Error: " + uwr.error);
@@ -199,7 +190,7 @@ public class GeminiAPI_Client : MonoBehaviour
             }
             else
             {
-                // 4. Parse the successful response
+               
                 string jsonResponse = uwr.downloadHandler.text;
                 GeminiResponse responseData = JsonUtility.FromJson<GeminiResponse>(jsonResponse);
 
@@ -218,9 +209,7 @@ public class GeminiAPI_Client : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Coroutine to generate speech from text using the Gemini TTS API.
-    /// </summary>
+   
     public IEnumerator GenerateSpeech(string textToSpeak, string voiceName, System.Action<AudioClip> onSpeechReady)
     {
         if (string.IsNullOrEmpty(apiKey))
@@ -256,7 +245,7 @@ public class GeminiAPI_Client : MonoBehaviour
         string jsonPayload = JsonUtility.ToJson(ttsRequest);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonPayload);
 
-        // 2. Send the POST request
+        
         using (UnityWebRequest uwr = new UnityWebRequest(fullApiUrl, "POST"))
         {
             uwr.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -296,14 +285,12 @@ public class GeminiAPI_Client : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Converts the Base64 PCM data from the API into a playable AudioClip.
-    /// </summary>
+    
     private AudioClip ConvertToAudioClip(string base64Data, string mimeType)
     {
         try
         {
-            // 1. Get Sample Rate from mimeType (e.g., "audio/L16;rate=24000")
+            
             int sampleRate = 24000; // Default
             if (!string.IsNullOrEmpty(mimeType))
             {
@@ -318,13 +305,13 @@ public class GeminiAPI_Client : MonoBehaviour
                 }
             }
 
-            // 2. Decode Base64 to raw PCM16 byte array
+          
             byte[] pcmData = System.Convert.FromBase64String(base64Data);
 
-            // 3. Convert 16-bit PCM byte array to a float array (AudioClip data)
+           
             float[] floatData = PCM16ByteArrayToFloatArray(pcmData);
 
-            // 4. Create the AudioClip
+            
             AudioClip clip = AudioClip.Create("NPC_Speech", floatData.Length, 1, sampleRate, false);
             clip.SetData(floatData, 0);
 
@@ -337,21 +324,19 @@ public class GeminiAPI_Client : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Helper function to convert raw 16-bit PCM data (s16le) into a float array.
-    /// </summary>
+   
     private float[] PCM16ByteArrayToFloatArray(byte[] pcmData)
     {
-        // 16-bit audio = 2 bytes per sample
+        
         int samples = pcmData.Length / 2;
         float[] floatArray = new float[samples];
 
         for (int i = 0; i < samples; i++)
         {
-            // Get the 16-bit sample (little-endian)
+            
             short sample = System.BitConverter.ToInt16(pcmData, i * 2);
 
-            // Normalize to float range [-1, 1]
+            
             floatArray[i] = sample / 32768f;
         }
 
